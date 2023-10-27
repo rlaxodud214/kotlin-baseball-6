@@ -12,22 +12,22 @@ class BaseballGame(
 ) {
     fun play() {
         var isStay = true
-        gameStartPrompt()
+        View.gameStartPrompt()
 
         while (isStay) {
             // [2]. baseball / 입력, 검증
-            inputBaseballWithValidator(baseballInput)
+            Controller.inputBaseballWithValidator(baseballInput)
             // [3]. baseball / 계산, 결과 출력
-            val isAllStrike = calculateBaseball(baseballInput, answer)
+            val isAllStrike = Controller.calculateBaseball(baseballInput, answer)
             when (isAllStrike) {
-                true -> gameEndPrompt()
+                true -> View.gameEndPrompt()
                 false -> continue
             }
 
             // [4]. menu / 입력, 검증 및 처리
-            inputMenuWithValidator(menuInput)
+            Controller.inputMenuWithValidator(menuInput)
             when (menuInput.selectedMenu) {
-                GameConfig.MENU_RANGE_FIRST -> answer.newGenerator()
+                GameConfig.MENU_RANGE_FIRST -> answer.reset()
                 GameConfig.MENU_RANGE_LAST -> isStay = false
             }
         }

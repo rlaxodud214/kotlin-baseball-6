@@ -45,7 +45,7 @@ class BaseballInput : UserInput() {
 
     /** [2]. baseball / 입력, 검증
      * 2.C) 숫자 중복 체크 (Model) */
-    fun checkDuplicate(userInputData: String, digit: Int) {
+    private fun checkDuplicate(userInputData: String, digit: Int) {
         val inputDataSet = userInputData.map {
             it.charToInt()
         }.toSet()
@@ -67,13 +67,13 @@ class BaseballInput : UserInput() {
         return calculateResult
     }
 
-    fun countBall(answer: IntArray): Int {
+    private fun countBall(answer: IntArray): Int {
         return inputDataArray.filterIndexed { index, i ->
             i in answer.filter { it != answer[index] } // Ball
         }.size
     }
 
-    fun countStrike(answer: IntArray): Int {
+    private fun countStrike(answer: IntArray): Int {
         return inputDataArray.filterIndexed { index, i ->
             i == answer[index] // Strike
         }.size
@@ -82,7 +82,7 @@ class BaseballInput : UserInput() {
 
 /** Menu 객체에만 필요한 변수 및 메소드 구분 */
 class MenuInput : UserInput() {
-    var _selectedMenu: Int = -1
+    private var _selectedMenu: Int = -1
     val selectedMenu: Int get() = _selectedMenu
 
     override fun setDataWithValidation(userInputData: String, digit: Int, range: CharRange) {
