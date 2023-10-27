@@ -2,17 +2,17 @@ package baseball.model
 
 import baseball.constants.GameConfig
 import baseball.utils.charToInt
-import baseball.utils.toIntArray
+import camp.nextstep.edu.missionutils.Console
 
-open class UserInput {
+open class UserInput(
+    private val digit: Int,
+    private val range: CharRange,
+) {
+
     /** [2, 4]. baseball, menu / 입력, 검증
      * 2.A) 입력된 문자열의 길이 검증
      * 2.B) 입력된 문자열의 범위 검증 (Model) */
-    open fun setDataWithValidation(
-        userInputData: String = "",
-        digit: Int = 0,
-        range: CharRange = CharRange('0', '0')
-    ) {
+    open fun setDataWithValidation(userInputData: String) {
         if (userInputData.length != digit) {
             throw IllegalArgumentException("입력된 값($userInputData)은 ${digit}자리가 아닙니다.")
         }
@@ -26,21 +26,20 @@ open class UserInput {
 }
 
 /** Baseball 객체에만 필요한 변수 및 메소드 구분 */
-class BaseballInput : UserInput() {
-    private var _inputDataArray: IntArray = intArrayOf()
+class BaseballInput : UserInput(
+    GameConfig.BASEBALL_DIGITS,
+    GameConfig.BASEBALL_RANGE,
+) {
+    private var _inputDataArray: List<Int> = listOf()
 
-    val inputDataArray: IntArray get() = _inputDataArray
+    val inputDataArray: List<Int> get() = _inputDataArray
 
-    override fun setDataWithValidation(userInputData: String, digit: Int, range: CharRange) {
-        super.setDataWithValidation(
-            userInputData,
-            GameConfig.BASEBALL_DIGITS,
-            GameConfig.BASEBALL_RANGE,
-        )
+    override fun setDataWithValidation(userInputData: String) {
+        super.setDataWithValidation(userInputData)
         // 숫자 중복 검사 추가 수행
         checkDuplicate(userInputData, GameConfig.BASEBALL_DIGITS)
         // 검증 이후 데이터 셋
-        _inputDataArray = userInputData.toIntArray()
+        _inputDataArray = userInputData.map { it.charToInt() }
     }
 
     /** [2]. baseball / 입력, 검증
@@ -59,7 +58,7 @@ class BaseballInput : UserInput() {
 
     /** [3]. baseball / 계산, 결과 출력
      * 1. Ball, Strike 계산 (Model) */
-    fun countBaseball(answer: IntArray): BallStrike {
+    fun countBaseball(answer: List<Int>): BallStrike {
         val calculateResult = BallStrike(
             countBall(answer),
             countStrike(answer)
@@ -67,13 +66,13 @@ class BaseballInput : UserInput() {
         return calculateResult
     }
 
-    private fun countBall(answer: IntArray): Int {
+    private fun countBall(answer: List<Int>): Int {
         return inputDataArray.filterIndexed { index, i ->
             i in answer.filter { it != answer[index] } // Ball
         }.size
     }
 
-    private fun countStrike(answer: IntArray): Int {
+    private fun countStrike(answer: List<Int>): Int {
         return inputDataArray.filterIndexed { index, i ->
             i == answer[index] // Strike
         }.size
@@ -81,16 +80,15 @@ class BaseballInput : UserInput() {
 }
 
 /** Menu 객체에만 필요한 변수 및 메소드 구분 */
-class MenuInput : UserInput() {
+class MenuInput : UserInput(
+    GameConfig.MENU_DIGITS,
+    GameConfig.MENU_RANGE,
+) {
     private var _selectedMenu: Int = -1
     val selectedMenu: Int get() = _selectedMenu
 
-    override fun setDataWithValidation(userInputData: String, digit: Int, range: CharRange) {
-        super.setDataWithValidation(
-            userInputData,
-            GameConfig.MENU_DIGITS,
-            GameConfig.MENU_RANGE,
-        )
+    override fun setDataWithValidation(userInputData: String) {
+        super.setDataWithValidation(userInputData)
         // 검증 이후 데이터 셋
         _selectedMenu = userInputData.toInt()
     }

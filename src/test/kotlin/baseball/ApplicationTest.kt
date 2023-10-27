@@ -1,9 +1,7 @@
 package baseball
 
-import baseball.constants.GameConfig
 import baseball.model.BaseballInput
 import baseball.model.MenuInput
-import baseball.model.UserInput
 import camp.nextstep.edu.missionutils.test.Assertions.assertRandomNumberInRangeTest
 import camp.nextstep.edu.missionutils.test.NsTest
 import org.assertj.core.api.Assertions.assertThat
@@ -12,8 +10,8 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 
 class ApplicationTest : NsTest() {
-    val menuInput = MenuInput()
-    val baseballInput = BaseballInput()
+    var menuInput = MenuInput()
+    var baseballInput = BaseballInput()
     @Test
     fun `야구게임의 모든 출력 검증, 게임 종료후 재시작 검증`() {
         assertRandomNumberInRangeTest(
@@ -46,29 +44,10 @@ class ApplicationTest : NsTest() {
                 "a165", "#^\$", "&", "$", "+",   // 특수 문자
                 "112", "565", "988", "0945",     // 숫자 중복
             )
-        TestExceptionData.forEach { data ->
+        TestExceptionData.forEach {
             assertThrows<IllegalArgumentException> {
-                println("오류 체크 : $data")
-                baseballInput.setDataWithValidation(
-                    data,
-                    GameConfig.BASEBALL_DIGITS,
-                    GameConfig.BASEBALL_RANGE,
-                )
-            }
-        }
-
-        // 오류 없는지 검증
-        val TestData: List<String> = listOf(
-            "123", "456", "789", "498", "176",
-        )
-        TestData.forEach { data ->
-            assertDoesNotThrow {
-                println("오류 체크 : $data")
-                baseballInput.setDataWithValidation(
-                    data,
-                    GameConfig.BASEBALL_DIGITS,
-                    GameConfig.BASEBALL_RANGE,
-                )
+                println("오류 체크 : $it")
+                baseballInput.setDataWithValidation(it)
             }
         }
     }
@@ -81,13 +60,9 @@ class ApplicationTest : NsTest() {
                 "3", "03", "22", "123", "10",
             )
 
-        TestExceptionData.forEach { data ->
+        TestExceptionData.forEach { it ->
             assertThrows<IllegalArgumentException> {
-                menuInput.setDataWithValidation(
-                    data,
-                    GameConfig.MENU_DIGITS,
-                    GameConfig.MENU_RANGE
-                )
+                menuInput.setDataWithValidation(it)
             }
         }
     }

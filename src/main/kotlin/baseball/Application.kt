@@ -4,30 +4,29 @@ import baseball.constants.GameConfig
 import baseball.model.Answer
 import baseball.model.BaseballInput
 import baseball.model.MenuInput
+import baseball.view.View
 
-class BaseballGame(
-    private val answer: Answer,
-    private val baseballInput: BaseballInput,
-    private val menuInput: MenuInput,
-) {
+class BaseballGame() {
     fun play() {
         var isStay = true
-        View.gameStartPrompt()
+        var answer = Answer()
+        val view = View()
+        val controller = Controller()
+        val baseballModel = BaseballInput()
+        val menuModel = MenuInput()
 
+        view.gameStartPrompt()
         while (isStay) {
-            // [2]. baseball / 입력, 검증
-            Controller.inputBaseballWithValidator(baseballInput)
-            // [3]. baseball / 계산, 결과 출력
-            val isAllStrike = Controller.calculateBaseball(baseballInput, answer)
-            when (isAllStrike) {
-                true -> View.gameEndPrompt()
-                false -> continue
+            controller.inputBaseballWithValidator(view, baseballModel)
+            val isAllStrike = controller.calculateBaseball(view, baseballModel, answer)
+            if (isAllStrike.not()) {
+                continue
             }
+            view.gameEndPrompt()
 
-            // [4]. menu / 입력, 검증 및 처리
-            Controller.inputMenuWithValidator(menuInput)
-            when (menuInput.selectedMenu) {
-                GameConfig.MENU_RANGE_FIRST -> answer.reset()
+            controller.inputMenuWithValidator(view, menuModel)
+            when (menuModel.selectedMenu) {
+                GameConfig.MENU_RANGE_FIRST -> answer = Answer()
                 GameConfig.MENU_RANGE_LAST -> isStay = false
             }
         }
@@ -35,10 +34,6 @@ class BaseballGame(
 }
 
 fun main() {
-    val game = BaseballGame(
-        Answer(),
-        BaseballInput(),
-        MenuInput()
-    )
+    val game = BaseballGame()
     game.play()
 }

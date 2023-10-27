@@ -4,21 +4,17 @@ import baseball.constants.GameConfig
 import camp.nextstep.edu.missionutils.Randoms
 
 class Answer {
-    private var _number: IntArray = intArrayOf()
+    private var _number: List<Int> = listOf()
 
-    val number: IntArray get() = _number
+    val number: List<Int> get() = _number
 
     init {
-        _number = answerGenerator()
-    }
-
-    fun reset() {
-        _number = answerGenerator()
+        _number = Generator()
     }
 
     companion object {
         /** [1]. 1..9에서 서로 다른 N개의 수 뽑기 (Model) */
-        fun answerGenerator(): IntArray {
+        fun Generator(): List<Int> {
             val computer = mutableListOf<Int>()
             while (computer.size < GameConfig.BASEBALL_DIGITS) {
                 val randomNumber = Randoms.pickNumberInRange(
@@ -28,7 +24,7 @@ class Answer {
                     computer.add(randomNumber)
                 }
             }
-            return computer.toIntArray()
+            return computer.toList()
         }
     }
 }

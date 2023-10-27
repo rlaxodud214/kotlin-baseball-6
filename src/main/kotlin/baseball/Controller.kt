@@ -4,37 +4,30 @@ import baseball.constants.GameConfig
 import baseball.model.Answer
 import baseball.model.BaseballInput
 import baseball.model.MenuInput
-import baseball.model.UserInput
-import camp.nextstep.edu.missionutils.Console
+import baseball.view.View
 
 class Controller {
-    companion object {
-        /** [2, 4]. baseball, menu / 입력, 검증
-         * 1. 안내 문구 call, 사용자 입력
-         * 2. 사용자 입력 검증 call (Controller) */
-        fun inputDataWithValidator(userInput: UserInput, digit: Int) {
-            View.printInputPrompt(digit)
+    /** [2, 4]. baseball, menu / 입력, 검증
+     * 1. 안내 문구 call, 사용자 입력
+     * 2. 사용자 입력 검증 call (Controller) */
+    fun inputBaseballWithValidator(view: View, baseballModel: BaseballInput) {
+        val userInputData = view.printInputPrompt(GameConfig.BASEBALL_DIGITS)
+        baseballModel.setDataWithValidation(userInputData)
+    }
 
-            val userInputData = Console.readLine() ?: ""
-            userInput.setDataWithValidation(userInputData)
-        }
+    fun inputMenuWithValidator(view: View, menuModel: MenuInput) {
+        val userInputData = view.printInputPrompt(GameConfig.MENU_DIGITS)
+        menuModel.setDataWithValidation(userInputData)
+    }
 
-        fun inputBaseballWithValidator(baseballInput: BaseballInput) {
-            inputDataWithValidator(baseballInput, GameConfig.BASEBALL_DIGITS)
-        }
-        fun inputMenuWithValidator(menuInput: MenuInput) {
-            inputDataWithValidator(menuInput, GameConfig.MENU_DIGITS)
-        }
+    /** [3]. baseball / 계산, 결과 출력
+     * 1. Ball, Strike 계산 함수 call
+     * 2. 계산 결과 출력 함수 call (Controller) */
+    fun calculateBaseball(view: View, baseballModel: BaseballInput, answer: Answer): Boolean {
+        val (ball, strike) = baseballModel.countBaseball(answer.number) // Controller -> Model
+        view.printCalculateResult(ball, strike)
 
-        /** [3]. baseball / 계산, 결과 출력
-         * 1. Ball, Strike 계산 함수 call
-         * 2. 계산 결과 출력 함수 call (Controller) */
-        fun calculateBaseball(baseballInput: BaseballInput, answer: Answer): Boolean {
-            val (ball, strike) = baseballInput.countBaseball(answer.number) // Controller -> Model
-            View.printCalculateResult(ball, strike)
-
-            val isAllStrike = (strike == GameConfig.BASEBALL_DIGITS)
-            return isAllStrike
-        }
+        val isAllStrike = (strike == GameConfig.BASEBALL_DIGITS)
+        return isAllStrike
     }
 }
